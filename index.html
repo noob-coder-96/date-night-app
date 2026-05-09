@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rob & Andrea's Date Night Picker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #1a1a2e;
+      color: #f0ead6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      color: #c9a96e;
+      font-size: 1rem;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .card {
+      background: #16213e;
+      border: 1px solid #2a2a5a;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: #c9a96e;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .card .hint {
+      font-size: 0.8rem;
+      color: #7a8aaa;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: #0f3460;
+      border: 2px solid transparent;
+      color: #f0ead6;
+      padding: 10px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: 'Georgia', serif;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover { border-color: #c9a96e; }
+
+    .option-btn.selected {
+      background: #c9a96e;
+      color: #1a1a2e;
+      font-weight: bold;
+      border-color: #c9a96e;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 8px;
+    }
+
+    .pick-btn {
+      flex: 1;
+      padding: 16px;
+      background: #c9a96e;
+      color: #1a1a2e;
+      font-size: 1rem;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .pick-btn:hover { opacity: 0.85; }
+    .pick-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .surprise-btn {
+      padding: 16px 20px;
+      background: transparent;
+      color: #c9a96e;
+      font-size: 1rem;
+      font-family: 'Georgia', serif;
+      font-weight: bold;
+      border: 2px solid #c9a96e;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .surprise-btn:hover {
+      background: #c9a96e22;
+    }
+
+    #results {
+      width: 100%;
+      max-width: 560px;
+      margin-top: 8px;
+    }
+
+    .result-card {
+      background: #16213e;
+      border: 1px solid #c9a96e55;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card .activity-name {
+      font-size: 1.25rem;
+      color: #c9a96e;
+      margin-bottom: 8px;
+    }
+
+    .result-card .activity-desc {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #d8cfc4;
+    }
+
+    .result-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      background: #0f3460;
+      color: #a0b0cc;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .tag.prep-low  { background: #0d3320; color: #6ecf9a; }
+    .tag.prep-medium { background: #332900; color: #c9a96e; }
+    .tag.prep-high { background: #330d0d; color: #cf6e6e; }
+
+    .no-results {
+      text-align: center;
+      padding: 32px;
+      color: #a09080;
+      font-style: italic;
+    }
+
+    .reset-btn {
+      display: block;
+      margin: 0 auto 40px;
+      background: transparent;
+      border: 1px solid #555;
+      color: #aaa;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover { border-color: #c9a96e; color: #c9a96e; }
+  </style>
+</head>
+<body>
+
+  <h1>🌙 Date Night Picker</h1>
+  <p class="subtitle">Rob & Andrea's activity finder</p>
+
+  <div class="card">
+    <h2>Energy Level</h2>
+    <div class="options">
+      <button class="option-btn" data-group="energy" data-value="low">🛋️ Low — cozy night in</button>
+      <button class="option-btn" data-group="energy" data-value="medium">✨ Medium — up for some fun</button>
+      <button class="option-btn" data-group="energy" data-value="high">🔥 High — let's go out</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>How Much Time?</h2>
+    <div class="options">
+      <button class="option-btn" data-group="time" data-value="short">⚡ Under 2 hours</button>
+      <button class="option-btn" data-group="time" data-value="medium">🕐 2–4 hours</button>
+      <button class="option-btn" data-group="time" data-value="long">🌃 Full evening</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Indoor or Outdoor?</h2>
+    <div class="options">
+      <button class="option-btn" data-group="location" data-value="indoor">🏠 Indoor</button>
+      <button class="option-btn" data-group="location" data-value="outdoor">🌿 Outdoor</button>
+      <button class="option-btn" data-group="location" data-value="either">🎲 Either works</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Prep Level</h2>
+    <div class="hint">How much effort do you want to put in before it starts?</div>
+    <div class="options">
+      <button class="option-btn" data-group="prep" data-value="low">🟢 Low — grab &amp; go</button>
+      <button class="option-btn" data-group="prep" data-value="medium">🟡 Medium — light planning</button>
+      <button class="option-btn" data-group="prep" data-value="high">🔴 High — need lead time</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Vibe</h2>
+    <div class="hint">Optional — skip if you don't know yet</div>
+    <div class="options">
+      <button class="option-btn" data-group="vibe" data-value="romantic">💕 Romantic</button>
+      <button class="option-btn" data-group="vibe" data-value="silly">😂 Silly</button>
+      <button class="option-btn" data-group="vibe" data-value="adventurous">🗺️ Adventurous</button>
+      <button class="option-btn" data-group="vibe" data-value="chill">😌 Chill</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="pick-btn" id="pickBtn" onclick="getRecommendations()" disabled>Find Our Night ✨</button>
+    <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+    const selections = { energy: null, time: null, location: null, prep: null, vibe: null };
+
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selections[group] = btn.dataset.value;
+        document.getElementById('pickBtn').disabled =
+          !selections.energy || !selections.time || !selections.location || !selections.prep;
+      });
+    });
+
+    const activities = [
+      {
+        name: "Board Game Night",
+        desc: "Grab something from the shelf, pour a glass, and go. No planning needed — just pick a game and start. Best with 1–2 games so you can actually get into it.",
+        energy: ["low", "medium"],
+        time: ["medium", "long"],
+        location: ["indoor", "either"],
+        vibe: ["silly", "chill"],
+        prep: "low",
+        tags: ["board games", "wine", "at home"]
+      },
+      {
+        name: "Wine & a Movie",
+        desc: "Open a bottle, pick something neither of you has seen, and commit to it. No switching after 10 minutes. Bonus: pick a theme (director, decade, country).",
+        energy: ["low"],
+        time: ["long"],
+        location: ["indoor", "either"],
+        vibe: ["romantic", "chill"],
+        prep: "low",
+        tags: ["wine", "movies", "cozy"]
+      },
+      {
+        name: "Takeout Roulette",
+        desc: "Each of you picks a cuisine, flip a coin. Order from a place neither of you has tried. Eat on the couch, no plates required.",
+        energy: ["low", "medium"],
+        time: ["short", "medium"],
+        location: ["indoor", "either"],
+        vibe: ["silly", "chill"],
+        prep: "low",
+        tags: ["food", "spontaneous", "easy"]
+      },
+      {
+        name: "New Restaurant Roulette",
+        desc: "Pick three spots neither of you has been, write them on slips of paper, draw one blind. No deliberating — just go.",
+        energy: ["medium", "high"],
+        time: ["medium", "long"],
+        location: ["outdoor", "either"],
+        vibe: ["adventurous", "romantic"],
+        prep: "low",
+        tags: ["food", "spontaneous", "out"]
+      },
+      {
+        name: "Cocktail Hour at Home",
+        desc: "Pick one spirit, find two recipes online, make both. Rate them 1–10. No special equipment needed — just whatever's in the cabinet.",
+        energy: ["low", "medium"],
+        time: ["short", "medium"],
+        location: ["indoor", "either"],
+        vibe: ["romantic", "silly"],
+        prep: "low",
+        tags: ["drinks", "at home", "fun"]
+      },
+      {
+        name: "Vinyl & Takeout",
+        desc: "Order food, put on a good record or playlist (Raye is always the right call), and just be together without an agenda. Phones in the other room.",
+        energy: ["low"],
+        time: ["short", "medium"],
+        location: ["indoor", "either"],
+        vibe: ["romantic", "chill"],
+        prep: "low",
+        tags: ["music", "food", "chill"]
+      },
+      {
+        name: "Neighborhood Wander",
+        desc: "Pick a direction and walk. No destination. Stop when something looks interesting — a bar, a bench, a good view. Set a loose end time so it doesn't drag.",
+        energy: ["medium", "high"],
+        time: ["medium", "long"],
+        location: ["outdoor", "either"],
+        vibe: ["adventurous", "romantic"],
+        prep: "low",
+        tags: ["walking", "exploring", "free"]
+      },
+      {
+        name: "Bar Trivia Night",
+        desc: "Find a bar running trivia tonight. You handle pop culture, Andrea handles music. It's a strong team. Check local listings before you go.",
+        energy: ["high"],
+        time: ["medium", "long"],
+        location: ["outdoor", "either"],
+        vibe: ["silly", "adventurous"],
+        prep: "medium",
+        tags: ["trivia", "bar", "out"]
+      },
+      {
+        name: "Card Game Throwdown",
+        desc: "Something fast and mean — Skull, Coup, or Taco Cat Goat Cheese Pizza. 30 minutes, high trash talk, loser picks up dinner.",
+        energy: ["medium", "high"],
+        time: ["short"],
+        location: ["indoor", "either"],
+        vibe: ["silly"],
+        prep: "low",
+        tags: ["games", "quick", "competitive"]
+      },
+      {
+        name: "Grab Wine & Sit Somewhere",
+        desc: "Pick up a bottle and find a good spot — a park, a rooftop, your stoop. No agenda. Just the wine and wherever the conversation goes.",
+        energy: ["low", "medium"],
+        time: ["short", "medium"],
+        location: ["outdoor", "either"],
+        vibe: ["romantic", "chill"],
+        prep: "low",
+        tags: ["wine", "outdoor", "relaxed"]
+      },
+      {
+        name: "At-Home Spa Night",
+        desc: "Face masks, candles, a playlist, no phones. Low key, high care. Take turns picking what's next. Everything you need is probably already at home.",
+        energy: ["low"],
+        time: ["short", "medium"],
+        location: ["indoor", "either"],
+        vibe: ["romantic", "chill"],
+        prep: "low",
+        tags: ["cozy", "self-care", "quiet"]
+      },
+      {
+        name: "Live Music or Comedy",
+        desc: "Check local listings for a small venue show, comedy club, or open mic. Worth the lead time — this one needs a ticket. Put it on the calendar now.",
+        energy: ["high"],
+        time: ["long"],
+        location: ["outdoor", "either"],
+        vibe: ["adventurous", "romantic"],
+        prep: "high",
+        tags: ["music", "comedy", "live", "out"]
+      },
+      {
+        name: "Wine Tasting at Home",
+        desc: "Open 2–3 bottles (use ones you already have), pour small pours, and actually talk about what you taste. Rate each one 1–10. No expertise required.",
+        energy: ["low", "medium"],
+        time: ["medium"],
+        location: ["indoor", "either"],
+        vibe: ["romantic", "chill"],
+        prep: "low",
+        tags: ["wine", "tasting", "at home"]
+      },
+      {
+        name: "Dive Bar Crawl",
+        desc: "Pick a strip with a few bars, set a rule (one drink per bar), and work your way through. No plan beyond that. See where the night goes.",
+        energy: ["high"],
+        time: ["medium", "long"],
+        location: ["outdoor", "either"],
+        vibe: ["silly", "adventurous"],
+        prep: "low",
+        tags: ["bars", "out", "spontaneous"]
+      },
+      {
+        name: "Games + Delivery Combo",
+        desc: "Order something easy, eat while you play. Don't overthink it — this is the default good-night template. Hard to go wrong.",
+        energy: ["low", "medium"],
+        time: ["medium", "long"],
+        location: ["indoor", "either"],
+        vibe: ["silly", "chill"],
+        prep: "low",
+        tags: ["games", "food", "easy"]
+      }
+    ];
+
+    function buildCards(list) {
+      if (list.length === 0) {
+        return `<div class="no-results"><p>No matches — try loosening a filter or hit Surprise Me.</p></div>`;
+      }
+      const prepLabel = { low: "🟢 Low prep", medium: "🟡 Medium prep", high: "🔴 High prep" };
+      const prepClass = { low: "prep-low", medium: "prep-medium", high: "prep-high" };
+      return list.map(a => `
+        <div class="result-card">
+          <div class="activity-name">${a.name}</div>
+          <div class="activity-desc">${a.desc}</div>
+          <div class="tags">
+            <span class="tag ${prepClass[a.prep]}">${prepLabel[a.prep]}</span>
+            ${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('') + `<button class="reset-btn" onclick="reset()">Start Over</button>`;
+    }
+
+    function getRecommendations() {
+      const { energy, time, location, prep, vibe } = selections;
+      const matches = activities.filter(a => {
+        const locMatch = a.location.includes(location) || location === "either" || a.location.includes("either");
+        const vibeMatch = !vibe || a.vibe.includes(vibe);
+        return a.energy.includes(energy) && a.time.includes(time) && locMatch && a.prep === prep && vibeMatch;
+      });
+      const picked = matches.sort(() => Math.random() - 0.5).slice(0, 3);
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = buildCards(picked);
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function surpriseMe() {
+      const picked = [activities[Math.floor(Math.random() * activities.length)]];
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = buildCards(picked);
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function reset() {
+      document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      Object.keys(selections).forEach(k => selections[k] = null);
+      document.getElementById('pickBtn').disabled = true;
+      document.getElementById('results').innerHTML = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
