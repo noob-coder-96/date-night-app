@@ -15,61 +15,64 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 24px 20px;
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 6px;
+      font-size: 1.6rem;
+      margin-bottom: 4px;
       letter-spacing: 0.02em;
     }
 
     .subtitle {
       color: #c9a96e;
-      font-size: 1rem;
-      margin-bottom: 40px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
       font-style: italic;
     }
 
-    .card {
+    .filters {
       background: #16213e;
       border: 1px solid #2a2a5a;
       border-radius: 16px;
-      padding: 32px;
+      padding: 20px;
       width: 100%;
       max-width: 560px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    .card h2 {
-      font-size: 1.1rem;
+    .filter-group h2 {
+      font-size: 0.75rem;
       color: #c9a96e;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
 
-    .card .hint {
-      font-size: 0.8rem;
+    .filter-group .hint {
+      font-size: 0.72rem;
       color: #7a8aaa;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
       font-style: italic;
     }
 
     .options {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
     }
 
     .option-btn {
       background: #0f3460;
       border: 2px solid transparent;
       color: #f0ead6;
-      padding: 10px 18px;
+      padding: 7px 12px;
       border-radius: 30px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       font-family: 'Georgia', serif;
       transition: all 0.2s;
     }
@@ -206,48 +209,49 @@
   <h1>🌙 Date Night Picker</h1>
   <p class="subtitle">Rob & Andrea's activity finder</p>
 
-  <div class="card">
-    <h2>Energy Level</h2>
-    <div class="options">
-      <button class="option-btn" data-group="energy" data-value="low">🛋️ Low — cozy night in</button>
-      <button class="option-btn" data-group="energy" data-value="medium">✨ Medium — up for some fun</button>
-      <button class="option-btn" data-group="energy" data-value="high">🔥 High — let's go out</button>
-    </div>
-  </div>
+  <button class="surprise-btn" onclick="surpriseMe()" style="margin-bottom: 32px;">🎲 Surprise Us</button>
 
-  <div class="card">
-    <h2>Indoor or Outdoor?</h2>
-    <div class="options">
-      <button class="option-btn" data-group="location" data-value="indoor">🏠 Indoor</button>
-      <button class="option-btn" data-group="location" data-value="outdoor">🌿 Outdoor</button>
-      <button class="option-btn" data-group="location" data-value="either">🎲 Either works</button>
+  <div class="filters">
+    <div class="filter-group">
+      <h2>Energy Level</h2>
+      <div class="options">
+        <button class="option-btn" data-group="energy" data-value="low">🛋️ Low</button>
+        <button class="option-btn" data-group="energy" data-value="medium">✨ Medium</button>
+        <button class="option-btn" data-group="energy" data-value="high">🔥 High</button>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>Prep Level</h2>
-    <div class="hint">How much effort do you want to put in before it starts?</div>
-    <div class="options">
-      <button class="option-btn" data-group="prep" data-value="low">🟢 Low — grab &amp; go</button>
-      <button class="option-btn" data-group="prep" data-value="medium">🟡 Medium — light planning</button>
-      <button class="option-btn" data-group="prep" data-value="high">🔴 High — need lead time</button>
+    <div class="filter-group">
+      <h2>Indoor or Outdoor?</h2>
+      <div class="options">
+        <button class="option-btn" data-group="location" data-value="indoor">🏠 Indoor</button>
+        <button class="option-btn" data-group="location" data-value="outdoor">🌿 Outdoor</button>
+        <button class="option-btn" data-group="location" data-value="either">🎲 Either</button>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>Vibe</h2>
-    <div class="hint">Optional — skip if you don't know yet</div>
-    <div class="options">
-      <button class="option-btn" data-group="vibe" data-value="romantic">💕 Romantic</button>
-      <button class="option-btn" data-group="vibe" data-value="silly">😂 Silly</button>
-      <button class="option-btn" data-group="vibe" data-value="adventurous">🗺️ Adventurous</button>
-      <button class="option-btn" data-group="vibe" data-value="chill">😌 Chill</button>
+    <div class="filter-group">
+      <h2>Prep Level</h2>
+      <div class="options">
+        <button class="option-btn" data-group="prep" data-value="low">🟢 No planning required</button>
+        <button class="option-btn" data-group="prep" data-value="medium">🟡 Light lift</button>
+        <button class="option-btn" data-group="prep" data-value="high">🔴 Commit to the bit</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h2>Vibe <span style="font-size:0.65rem; color:#7a8aaa; text-transform:none; letter-spacing:0">— optional</span></h2>
+      <div class="options">
+        <button class="option-btn" data-group="vibe" data-value="romantic">💕 Romantic</button>
+        <button class="option-btn" data-group="vibe" data-value="silly">😂 Silly</button>
+        <button class="option-btn" data-group="vibe" data-value="adventurous">🗺️ Adventurous</button>
+        <button class="option-btn" data-group="vibe" data-value="chill">😌 Chill</button>
+      </div>
     </div>
   </div>
 
   <div class="btn-row">
     <button class="pick-btn" id="pickBtn" onclick="getRecommendations()" disabled>Find Our Night ✨</button>
-    <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me</button>
   </div>
 
   <div id="results"></div>
@@ -258,9 +262,14 @@
     document.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const group = btn.dataset.group;
+        const alreadySelected = btn.classList.contains('selected');
         document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selections[group] = btn.dataset.value;
+        if (group === 'vibe' && alreadySelected) {
+          selections[group] = null;
+        } else {
+          btn.classList.add('selected');
+          selections[group] = btn.dataset.value;
+        }
         document.getElementById('pickBtn').disabled =
           !selections.energy || !selections.location || !selections.prep;
       });
