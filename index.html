@@ -216,15 +216,6 @@
   </div>
 
   <div class="card">
-    <h2>How Much Time?</h2>
-    <div class="options">
-      <button class="option-btn" data-group="time" data-value="short">⚡ Under 2 hours</button>
-      <button class="option-btn" data-group="time" data-value="medium">🕐 2–4 hours</button>
-      <button class="option-btn" data-group="time" data-value="long">🌃 Full evening</button>
-    </div>
-  </div>
-
-  <div class="card">
     <h2>Indoor or Outdoor?</h2>
     <div class="options">
       <button class="option-btn" data-group="location" data-value="indoor">🏠 Indoor</button>
@@ -262,7 +253,7 @@
   <div id="results"></div>
 
   <script>
-    const selections = { energy: null, time: null, location: null, prep: null, vibe: null };
+    const selections = { energy: null, location: null, prep: null, vibe: null };
 
     document.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -271,7 +262,7 @@
         btn.classList.add('selected');
         selections[group] = btn.dataset.value;
         document.getElementById('pickBtn').disabled =
-          !selections.energy || !selections.time || !selections.location || !selections.prep;
+          !selections.energy || !selections.location || !selections.prep;
       });
     });
 
@@ -447,11 +438,11 @@
     }
 
     function getRecommendations() {
-      const { energy, time, location, prep, vibe } = selections;
+      const { energy, location, prep, vibe } = selections;
       const matches = activities.filter(a => {
         const locMatch = a.location.includes(location) || location === "either" || a.location.includes("either");
         const vibeMatch = !vibe || a.vibe.includes(vibe);
-        return a.energy.includes(energy) && a.time.includes(time) && locMatch && a.prep === prep && vibeMatch;
+        return a.energy.includes(energy) && locMatch && a.prep === prep && vibeMatch;
       });
       const picked = matches.sort(() => Math.random() - 0.5).slice(0, 3);
       const resultsEl = document.getElementById('results');
